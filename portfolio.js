@@ -18,7 +18,7 @@ var minImage, oDest, i;
 
 // recuperation du conteneur
 oimage_defile = document.getElementById('image_defile');
-oimage_defile.max_image = 24;
+oimage_defile.max_image = 24; // devrait etre loader en fonction du nombre de fonction
 oimage_defile.used_number = 0;
 oimage_defile.actual_photo = 0;
 oimage_defile.start_point = 1;
