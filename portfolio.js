@@ -1,114 +1,118 @@
-var links = document.getElementsByTagName('a'),
-    linksLen = links.length;
-
-for (var i = 0 ; i < linksLen ; i++) {
-
-    links[i].onclick = function() { // J'utilise le DOM-0, mais vous pouvez très bien utiliser le DOM-2 !
-        displaymain_Image(this);           // On appelle notre fonction pour afficher les images
-        return false;               // Et on bloque la redirection
-    };
-
-}
-
-
-
 // variable utilises
 var minImage, oDest, i;
 
 
-// recuperation du conteneur
-oimage_defile = document.getElementById('image_defile');
-oimage_defile.max_image = 24; // devrait etre loader en fonction du nombre de fonction
-oimage_defile.used_number = 0;
-oimage_defile.actual_photo = 0;
-oimage_defile.start_point = 1;
-image_defile(oimage_defile);
-
-function image_defile(oimage_defile) {
-
-	while (oimage_defile.hasChildNodes())
-  		oimage_defile.removeChild(oimage_defile.lastChild);
-
-	var remaining_width = oimage_defile.offsetWidth *0.95;
-	
-	if ( oimage_defile.actual_photo > oimage_defile.used_number/2) {
-		oimage_defile.start_point = Math.round(oimage_defile.actual_photo - oimage_defile.used_number /2);
-	}
-	else 
-	{
-		oimage_defile.start_point = 1
-	}
-
-	oimage_defile.used_number = 0;
-	for( i = oimage_defile.start_point; i < oimage_defile.max_image+1; i++){
-			// creation de l'element image
-			minImage = document.createElement('img');
-			// affectation du nom de l'image
-			minImage.src = "images/Portfolio-min-" + i +".jpg";
-			// ajout d'un ID pour recuperation ulterieure
-			minImage.id = 'Portfolio-' +i;
-			minImage.number = i;
-
-			// devrait y avoir un truc pour etre sur que minImage.src est chargé
-			var ratio_image = minImage.width / minImage.height; 
-			minImage.height = oimage_defile.offsetHeight;
-			minImage.width = oimage_defile.offsetHeight* ratio_image;
-
-			if( oimage_defile.actual_photo == i) {
-				minImage.style.border='2px solid #E8272C'; // selection de l'image
+var zone_defile = {
+	max_image: 24,
+	used_number: 0,
+	actual_photo: 0,
+	start_point: 1,
+	remaining_width: 0,
+	loaded_images: 0,
+	image_list: [],
+	load_html: function(id) {
+		this.html = document.getElementById(id);
+	},
+	add_min: function(src, num) {
+		minImage = document.createElement('img');
+		minImage.src = src;
+		minImage.id = num;
+		this.image_list.push(minImage);
+		minImage.onload = function() {
+			zone_defile.loaded_images += 1;
+			var ratio_image = this.width / this.height;
+			this.height = zone_defile.html.offsetHeight;
+			this.width = 1.0 * zone_defile.html.offsetHeight * ratio_image;
+			if (zone_defile.loaded_images >= zone_defile.max_image) {
+				zone_defile.draw();
 			}
+		};
 
-			remaining_width -= minImage.width ;
-			if(remaining_width > 0) { // plus assez de places dans la bande deroulante
-				oimage_defile.used_number += 1;
-				// ajout au conteneur
-			  	oimage_defile.appendChild(minImage);
-			}
-
-	}
-	// revoir ordre les min images ne sont pas loadées
-
-	// donne le pouvoir de on.click au images du bandeau deroulant, faudrait tetre faire une classe miniature
-	for( i = oimage_defile.start_point; i < oimage_defile.start_point + oimage_defile.used_number+1; i++){
-		document.getElementById('Portfolio-' + i).onclick = function() {
-			//on met l'image dans l'overlay
-			var main_image = new Image(),
-		    overlay = document.getElementById('overlay');
-		    overlay.onclick = function() {}
-
-		    //resize quand on load la main image
-		    main_image.onload = function() {
+		minImage.onclick = function() {
+			var main_image = new Image();
+			overlay = document.getElementById('overlay');
+			overlay.onclick = function() {} //zoom?
+			main_image.src = "images/Portfolio-" + (parseInt(this.id) + 1) + ".jpg";
+			zone_defile.actual_photo = parseInt(this.id);
+			zone_defile.draw();
+			//resize quand on load la main image
+			main_image.onload = function() {
 				var ratio_screen = overlay.offsetWidth / overlay.offsetHeight;
 				var ratio_image = main_image.width / main_image.height;
 				if (ratio_screen > ratio_image) {
-			   		main_image.height = overlay.offsetHeight*0.95;
+					main_image.height = overlay.offsetHeight * 0.95;
 					main_image.width = main_image.height * ratio_image;
-				}
-				else {
-			   		main_image.width = overlay.offsetWidth*0.95;
+				} else {
+					main_image.width = overlay.offsetWidth * 0.95;
 					main_image.height = main_image.width / ratio_image;
 				}
 				main_image.id = "main_image"
-				main_image.margin= "auto";
-		        overlay.innerHTML = '';
-		        overlay.appendChild(main_image);
-		    };
-
-		    main_image.src = "images/"+ this.id + ".jpg";
-
-		    // actualisation bandeau deroulant en fonction de la position
-		    oimage_defile = document.getElementById('image_defile');
-		    oimage_defile.actual_photo = this.number;
-		    image_defile(oimage_defile);
+				main_image.margin = "auto";
+				overlay.innerHTML = '';
+				overlay.appendChild(main_image);
+			};
 		};
+	},
+	remaining_width_init: function(percent) {
+		this.remaining_width = this.html.offsetWidth * percent;
+	},
+	clean_image: function() {
+		this.remaining_width_init(0.95);
+		if (this.html != "")
+			while (this.html.hasChildNodes())
+				this.html.removeChild(this.html.lastChild);
+		for (i = 0; i < this.max_image; i++) {
+			this.image_list[i].style.border = '';
+		}
+	},
+	draw: function() {
+		var current_list = [];
+		this.clean_image();
+		if (this.image_list[this.actual_photo]) {
+			this.image_list[this.actual_photo].style.border = '2px solid #E8272C';
+			current_list.push(this.actual_photo);
+			this.remaining_width -= this.image_list[this.actual_photo].width;
+		}
+		i = 1
+		while (this.remaining_width > 0 && i < this.max_image) {
+
+			if (this.image_list[this.actual_photo + i]) {
+				this.remaining_width -= this.image_list[this.actual_photo + i].width;
+				if (this.remaining_width > 0) {
+					current_list.push(this.actual_photo + i);
+				}
+			}
+
+			if (this.image_list[this.actual_photo - i]) {
+				this.remaining_width -= this.image_list[this.actual_photo - i].width;
+				if (this.remaining_width > 0) {
+					current_list.push(this.actual_photo - i);
+				}
+			}
+
+			i += 1;
+		}
+		current_list.sort((a, b) => a - b);
+
+
+		for (var j in current_list) {
+			this.html.appendChild(this.image_list[current_list[j]]);
+		}
 	}
+
+
+
+};
+
+zone_defile.load_html("zone_defilement");
+zone_defile.remaining_width_init();
+
+
+for (i = 1; i < zone_defile.max_image + 1; i++) {
+	zone_defile.add_min("images/Portfolio-min-" + i + ".jpg", i - 1);
 }
 
 
-
-
-
-
 document.getElementById('overlay').onclick = function() {
-    this.style.display = 'none';
+	//this.style.display = 'none';
 };

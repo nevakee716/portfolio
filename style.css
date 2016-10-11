@@ -1,3 +1,4 @@
+
 #overlay {
 	display: flex;
     top: 0; 
@@ -11,7 +12,7 @@
 }
 
 
-#image_defile {
+#zone_defilement {
     top: 0; 
     left: 0;
     width: 100%; 
