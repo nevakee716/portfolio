@@ -29,6 +29,10 @@ var zone_defile = {
 		};
 
 		minImage.onclick = function() {
+
+			zone_defile.image_list[zone_defile.actual_photo].width += 4;
+			zone_defile.image_list[zone_defile.actual_photo].height += 4;
+
 			var main_image = new Image();
 			overlay = document.getElementById('overlay');
 			overlay.onclick = function() {} //zoom?
@@ -70,6 +74,8 @@ var zone_defile = {
 		this.clean_image();
 		if (this.image_list[this.actual_photo]) {
 			this.image_list[this.actual_photo].style.border = '2px solid #E8272C';
+			this.image_list[this.actual_photo].width -= 4;
+			this.image_list[this.actual_photo].height -= 4;
 			current_list.push(this.actual_photo);
 			this.remaining_width -= this.image_list[this.actual_photo].width;
 		}
