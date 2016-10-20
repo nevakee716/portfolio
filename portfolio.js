@@ -130,15 +130,11 @@ var overlay = {
 }
 
 
+zone_defile.load_html("lower_zone_defilement");
+overlay.load_html("main_image");
 
-
-
-
-
-
-zone_defile.load_html("zone_defilement");
-overlay.load_html("overlay");
-
+console.log("zone_defile")
+console.log("overlay")
 zone_defile.remaining_width_init();
 zone_defile.html.onclick = function() {} //zoom?
 
