@@ -18,7 +18,7 @@ class zone_de_defilement {
 		this.main_image.link_html(src);
 	}
 	link_category_bar(src) {
-		this.category_bar = new Category_Bar;
+		this.category_bar = new Category_Bar(100,this);
 		this.category_bar.link_html(src);
 	}
 	add_min(src, srcfull,num) {
@@ -114,7 +114,6 @@ class zone_de_defilement {
 			this.image_list[this.actual_photo].height += 4;
 			// creation de la main image
 			this.actual_photo += direction;
-			this.main_image.load_image(this.image_list[this.actual_photo].srcfull);
 			// redessine le bandeau
 			this.draw();
 		}
@@ -139,6 +138,13 @@ class zone_de_defilement {
 		}
 		// on créee un bandeau qui aura l'actualphoto en centrale, on ajoute les images après et avant tant qu'on a de la place
 		if (this.image_list[this.actual_photo]) {
+			if(!this.category_bar.selected_categories.includes(this.image_list[this.actual_photo].category) && !this.category_bar.selected_categories.includes("All")) {
+				this.actual_photo = 0;
+				while (!this.category_bar.selected_categories.includes(this.image_list[this.actual_photo].category)) {
+					this.actual_photo ++;
+				}
+			}
+			this.main_image.load_image(this.image_list[this.actual_photo].srcfull);
 			this.remaining_width -= this.image_list[this.actual_photo].width;
 			this.image_list[this.actual_photo].style.border = '2px solid #E8272C';
 			this.image_list[this.actual_photo].width -= 4;
@@ -147,18 +153,21 @@ class zone_de_defilement {
 		}
 		let i = 1
 		while (this.remaining_width > 0 && i < this.max_image) {
-
 			if (this.image_list[this.actual_photo + i]) {
-				this.remaining_width -= this.image_list[this.actual_photo + i].width;
-				if (this.remaining_width > 0) {
-					current_list.push(this.actual_photo + i);
+				if (this.category_bar.selected_categories.includes(this.image_list[this.actual_photo + i].category) || this.category_bar.selected_categories.includes("All") ) {
+					this.remaining_width -= this.image_list[this.actual_photo + i].width;
+					if (this.remaining_width > 0) {
+						current_list.push(this.actual_photo + i);
+					}
 				}
 			}
 
 			if (this.image_list[this.actual_photo - i]) {
-				this.remaining_width -= this.image_list[this.actual_photo - i].width;
-				if (this.remaining_width > 0) {
-					current_list.push(this.actual_photo - i);
+				if (this.category_bar.selected_categories.includes(this.image_list[this.actual_photo - i].category) || this.category_bar.selected_categories.includes("All") ) {
+					this.remaining_width -= this.image_list[this.actual_photo - i].width;
+					if (this.remaining_width > 0) {
+						current_list.push(this.actual_photo - i);
+					}
 				}
 			}
 
@@ -222,9 +231,12 @@ class Main_Image {
 }
 
 class Category_Bar {
-	constructor(scaling = 100) {
+	constructor(scaling = 100,parent) {
 		this.scaling = scaling/100; 
+		this.selected_categories = ["All"];
 		this.categories = ["All"];
+		this.selected = [];
+		this.zone_de_defilement = parent;
 	}
 	// lie le bandeau a l'objet html
 	link_html(id) {
@@ -252,6 +264,7 @@ class Category_Bar {
 		}
 	}
 	draw() {
+		this.clean();
 		let table = document.createElement('table');
 		let tr = document.createElement('tr');
 		table.id = "category_bar_table";
@@ -262,19 +275,46 @@ class Category_Bar {
 		let pxW = this.html.offsetWidth / nbr_of_letter;
 		for (let j in this.categories) {
 			let td = document.createElement('td');
-			td.class = "category_cell";
+			td.className  = "category_cell";
 			td.style.fontSize  = pxW * 2,5;
+			td.id = this.categories[j];
 			let content = document.createTextNode(this.categories[j]);
+			let temp_bar = this;
 
+			if(this.selected_categories.includes(this.categories[j])) {
+				this.apply_style(td)
+			} else {
+				this.unapply_style(td)
+			}
 
 			td.onclick = function() {
-
-    			this.style.borderCollapse = "collapse"; /*replaces table attribute cellspacing*/
-    			this.style.borderStyle  = "solid"; /*replaces table attribute border */
-   				this.style.borderWidth = "2px";
-   				this.style.borderColor = "white";
-
-
+				let temp_bar_categories = [];
+				let index_of_click = temp_bar.selected_categories.indexOf(this.id);
+				let All_is_click = temp_bar.selected_categories.indexOf("All") + 1;
+				if(this.id != "All") {
+					if ( index_of_click == -1) {
+						temp_bar.selected_categories.push(this.id);
+						if (All_is_click) {
+							temp_bar.selected_categories = temp_bar.selected_categories.slice(1);
+						}
+					} else {
+						for (let i = 1*All_is_click; i < temp_bar.selected_categories.length; i++) {
+							if (i != index_of_click) {
+								temp_bar_categories.push(temp_bar.selected_categories[i]);
+							}
+						}
+						temp_bar.selected_categories = temp_bar_categories;
+					}
+				} else {
+					temp_bar.selected_categories = ["All"];
+				}
+				if(temp_bar.selected_categories.length == temp_bar.categories.length - 1 || temp_bar.selected_categories.length == 0) {
+					temp_bar.selected_categories = ["All"];	
+				}
+				temp_bar.zone_de_defilement.image_list[temp_bar.zone_de_defilement.actual_photo].width += 4;
+				temp_bar.zone_de_defilement.image_list[temp_bar.zone_de_defilement.actual_photo].height += 4;
+				temp_bar.zone_de_defilement.draw();
+				temp_bar.draw();
 			};
 
 			td.appendChild(content);
@@ -284,6 +324,16 @@ class Category_Bar {
 		table.appendChild(tr);
 		this.html.appendChild(table);
 	}
+	apply_style(element) {
+		element.style.color = "yellow";
+		element.style.textDecoration= "underline";
+	}
+	unapply_style(element) {
+		element.style.color = "white";
+		element.style.textDecoration= "none";
+	}
+
+
 }
 
 
