@@ -1,0 +1,10 @@
+nevakee-menu {
+	display: flex;
+	background: black;
+	color: white;
+
+	> .menu-item {
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+	}
+}

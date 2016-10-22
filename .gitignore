@@ -1,0 +1,12 @@
+.idea/
+
+# Folder config file
+*.ini
+
+# Mac crap
+.DS_Store
+
+#Compiled files (currently commented)
+
+#Shared components (managed separtly)
+node_modules/
