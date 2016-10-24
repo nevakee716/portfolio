@@ -1,4 +1,4 @@
-$nevakee-menu-height: 2rem !default;
+$nevakee-menu-height: 3rem !default;
 
 nevakee-portfolio {
 	display: block;
@@ -7,6 +7,10 @@ nevakee-portfolio {
 
 	nevakee-menu {
 		height: $nevakee-menu-height;
+		background: black;
+		color: white;
+		font-size: 3rem;
+		text-align: center;
 	}
 
 	nevakee-zone-defilement {

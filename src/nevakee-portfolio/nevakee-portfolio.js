@@ -12,13 +12,21 @@ NevakeePortfolioProto.createdCallback = function () {
 	this._imageContainer = this.querySelector(".image-container");
 	this._zoneDefilement = this.querySelector("nevakee-zone-defilement");
 	this._photoModel = this.querySelector("nevakee-photo-model");
-	this._images = null;
 
-	this._photoModel._loadImages();
-	this._menu.setMenu(this._photoModel.getCategories());
 
-	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
-	this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
+
+	var that = this;
+	this._photoModel.loadData("images/index.json",ModeleReady.bind(this));
+
+	function ModeleReady() {
+		this._menu.setMenu(this._photoModel.getCategories());
+    }
+
+
+	//this._menu.setMenu(this._photoModel.getCategories());
+
+	//this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
+	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
 NevakeePortfolioProto.attachededCallback = function () {};
@@ -27,8 +35,7 @@ NevakeePortfolioProto.detachedCallback = function () {};
 
 NevakeePortfolioProto.attributeChangedCallback = function () {};
 
-NevakeePortfolioProto._loadImages = function () {
-};
+
 
 NevakeePortfolioProto._onMenuClicked = function (event) {
 	// Demande des images a afficher a ton model
