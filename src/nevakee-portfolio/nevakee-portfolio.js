@@ -19,13 +19,13 @@ NevakeePortfolioProto.createdCallback = function () {
 	this._photoModel.loadData("images/index.json",ModeleReady.bind(this));
 
 	function ModeleReady() {
-		this._menu.setMenu(this._photoModel.getCategories());
+		this._menu.addCategories(this._photoModel.getCategories());
     }
 
 
 	//this._menu.setMenu(this._photoModel.getCategories());
 
-	//this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
+	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
 	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
@@ -40,6 +40,8 @@ NevakeePortfolioProto.attributeChangedCallback = function () {};
 NevakeePortfolioProto._onMenuClicked = function (event) {
 	// Demande des images a afficher a ton model
 	// return photo objects {label, path_de_l_image}
+	console.log("coucou");
+	console.log("click + nvl categories : " + this._menu.getSelectedCategories());
 };
 
 NevakeePortfolioProto._onPhotoClicked = function (event) {
