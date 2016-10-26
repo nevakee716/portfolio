@@ -192,6 +192,18 @@ NevakeePhotoModel.getCategories = function () {
     return listCategories;
 }
 
+NevakeePhotoModel.getAllSrcMin = function () {
+    var listSrcMin = [];
+    for (var i = 0; i < this.index.photo.length; i++) {
+        if (this.index.photo[i].hasOwnProperty("src_min")) {
+            if (!listSrcMin.includes(this.index.photo[i].src_min)) {
+                listSrcMin.push(this.index.photo[i].src_min);
+            }    
+        }
+    }
+    return listSrcMin;
+}
+
 
 
 NevakeePhotoModel._onClick = function (event) {
@@ -229,12 +241,16 @@ NevakeePortfolioProto.createdCallback = function () {
 
 	function ModeleReady() {
 		this._menu.addCategories(this._photoModel.getCategories());
+		this._zoneDefilement.drawZoneDefilement(this._photoModel.getAllSrcMin());
+
     }
 
 
-	//this._menu.setMenu(this._photoModel.getCategories());
 
+
+	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
+	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoClicked.bind(this), false);
 	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
@@ -250,13 +266,58 @@ NevakeePortfolioProto._onMenuClicked = function (event) {
 	// Demande des images a afficher a ton model
 	// return photo objects {label, path_de_l_image}
 	console.log("coucou");
-	console.log("click + nvl categories" + this._menu.getSelectedCategories());
+	console.log("click + nvl categories : " + this._menu.getSelectedCategories());
 };
 
-NevakeePortfolioProto._onPhotoClicked = function (event) {
+NevakeePortfolioProto._onMinPhotoClicked = function (event) {
+	console.log("coucou");
+
 };
 
 document.registerElement('nevakee-portfolio', {prototype: NevakeePortfolioProto});
 },{}],4:[function(require,module,exports){
+"use strict";
 
+var NevakeeZoneDefilement = Object.create(HTMLElement.prototype);
+
+NevakeeZoneDefilement.createdCallback = function () {
+
+};
+
+NevakeeZoneDefilement.attachededCallback = function () {
+
+};
+
+
+NevakeeZoneDefilement.drawZoneDefilement = function (srcs) {
+    var img = null;
+    var fragment = document.createDocumentFragment();
+    var i = 0;
+    srcs.forEach(function (src) {
+        img = document.createElement("img");
+        img.className = "min-image";
+        img.src = src;
+        img.id = i;
+        i++;
+        fragment.appendChild(img);
+    }, this);
+    this.appendChild(fragment);
+    this.addEventListener("click", this._onClick.bind(this), false);
+};
+
+
+
+NevakeeZoneDefilement._onClick = function (event) {
+	var newEvent = document.createEvent('Event');
+    console.log(event);
+	newEvent.id = event.target.dataset.id;
+	newEvent.initEvent('on-min-clicked', true, true);
+	this.dispatchEvent(newEvent);
+};
+
+NevakeeZoneDefilement.detachedCallback = function () {};
+
+NevakeeZoneDefilement.attributeChangedCallback = function () {};
+
+document.registerElement('nevakee-zone-defilement', {prototype: NevakeeZoneDefilement});
 },{}]},{},[1,4,2,3]);

@@ -45,6 +45,18 @@ NevakeePhotoModel.getCategories = function () {
     return listCategories;
 }
 
+NevakeePhotoModel.getAllSrcMin = function () {
+    var listSrcMin = [];
+    for (var i = 0; i < this.index.photo.length; i++) {
+        if (this.index.photo[i].hasOwnProperty("src_min")) {
+            if (!listSrcMin.includes(this.index.photo[i].src_min)) {
+                listSrcMin.push(this.index.photo[i].src_min);
+            }    
+        }
+    }
+    return listSrcMin;
+}
+
 
 
 NevakeePhotoModel._onClick = function (event) {

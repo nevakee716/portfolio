@@ -2,7 +2,7 @@ $nevakee-menu-height: 3rem !default;
 
 nevakee-portfolio {
 	display: block;
-	background: red;
+	background: black;
 	height: 100%;
 
 	nevakee-menu {
@@ -14,7 +14,15 @@ nevakee-portfolio {
 	}
 
 	nevakee-zone-defilement {
-		height: calc(100% - #{$nevakee-menu-height});
-		line-height: calc(100% - #{$nevakee-menu-height});
+		background: black;
+		height: calc(20% - #{$nevakee-menu-height});
+		line-height: calc(20% - #{$nevakee-menu-height});
+		overflow: hidden;
+		.min-image {
+			height: 100%;		
+		}
+	}
+	.image-container {
+		height: 80%;	
 	}
 }

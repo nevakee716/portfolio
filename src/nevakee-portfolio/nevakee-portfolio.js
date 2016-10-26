@@ -20,12 +20,16 @@ NevakeePortfolioProto.createdCallback = function () {
 
 	function ModeleReady() {
 		this._menu.addCategories(this._photoModel.getCategories());
+		this._zoneDefilement.drawZoneDefilement(this._photoModel.getAllSrcMin());
+
     }
 
 
-	//this._menu.setMenu(this._photoModel.getCategories());
 
+
+	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
+	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoClicked.bind(this), false);
 	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
@@ -44,7 +48,9 @@ NevakeePortfolioProto._onMenuClicked = function (event) {
 	console.log("click + nvl categories : " + this._menu.getSelectedCategories());
 };
 
-NevakeePortfolioProto._onPhotoClicked = function (event) {
+NevakeePortfolioProto._onMinPhotoClicked = function (event) {
+	console.log("coucou");
+
 };
 
 document.registerElement('nevakee-portfolio', {prototype: NevakeePortfolioProto});
