@@ -27,7 +27,6 @@ NevakeeMenuProto.getSelectedCategories = function (menus) {
 
 
 NevakeeMenuProto._drawMenu = function () {
-	console.log(this)
 	var element = null;
 	var fragment = document.createDocumentFragment();
 	var i = 0;
@@ -55,7 +54,13 @@ NevakeeMenuProto._drawMenu = function () {
 };
 
 NevakeeMenuProto._drawText = function (id) {
+	//snapshot des etats des categories
+	var previousStateOfCategories = [];
+	for (var i = 0; i < this.categories.length; i++) { 
+		previousStateOfCategories.push(this.categories[i][1])
+	}
 
+	//modification des categories en fonction du click
 	if(id !== "All") {
 		if(this.numberOfCategoriesOn == this.categories.length) {
 			this.categories.forEach(function (menuItem) {
@@ -78,16 +83,19 @@ NevakeeMenuProto._drawText = function (id) {
 		this.numberOfCategoriesOn = this.categories.length;	
 	}
 
+	
 	if(this.numberOfCategoriesOn == 0 || this.numberOfCategoriesOn == this.categories.length) {
 		this._highlightAll();	
 	}
 	else {
 		for (var i = 0; i < this.categories.length; i++) { 
-		    if(this.categories[i][1] == true) {
-		    	this._highlight(i);
-		    } else {
-		    	this._downlight(i);
-		    }
+			if(previousStateOfCategories[i] !== this.categories[i]) { // on vérifie que l'état à changer
+			    if(this.categories[i][1] == true) {
+			    	this._highlight(i);
+			    } else {
+			    	this._downlight(i);
+			    }
+			}
 		}
 	}
 };

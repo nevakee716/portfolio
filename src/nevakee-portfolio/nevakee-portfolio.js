@@ -49,7 +49,7 @@ NevakeePortfolioProto._onMenuClicked = function (event) {
 };
 
 NevakeePortfolioProto._onMinPhotoClicked = function (event) {
-	console.log("coucou");
+	console.log("coucou : " + event);
 
 };
 
