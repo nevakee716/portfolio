@@ -7,6 +7,7 @@ NevakeeZoneDefilement.createdCallback = function () {
     this.minImageWidthArray = [];
     this.totalMinImageWidth = 0;
     this.selectMinImageId = null;
+
 };
 
 NevakeeZoneDefilement.attachededCallback = function () {
@@ -45,12 +46,12 @@ NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
     for (var id in this.minImageWidth) {
         if (this.minImageWidth.hasOwnProperty(id)) {
             if(centerId == id) {
-                var size = (this.clientWidth + this.offsetLeft)/2 - centerWidth - this.minImageWidth[id]/2;
+                var size = (this.clientWidth + this.offsetLeft)/2 - centerWidth - this.minImageWidth[id]/2 - 250;
                 if(size > 0) {
                     size = 0;    
                 }
-                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetLeft)) {
-                    size = this.clientWidth + this.offsetLeft - this.totalMinImageWidth;
+                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetLeft) + 500) {
+                    size = this.clientWidth + this.offsetLeft - this.totalMinImageWidth - 500;
                 }
                 this.style.marginLeft = size + "px" ;
             }
@@ -87,8 +88,6 @@ NevakeeZoneDefilement._selectMinImage = function (object) {
 };
 
 NevakeeZoneDefilement._UnselectMinImageById = function (id,object) {
-    console.log(id)
-    console.log(object)
     if(object.dataset.id && object.dataset.id == id) {
         object.style.borderWidth = "0rem";  
     }

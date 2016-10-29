@@ -18,6 +18,7 @@ nevakee-portfolio {
 		background: black;
 		height: calc(20% - #{$nevakee-menu-height});
 		line-height: calc(20% - #{$nevakee-menu-height});
+		margin-right: -500px;
 		.min-image {
 			height: 100%;
 			border-style : solid;
