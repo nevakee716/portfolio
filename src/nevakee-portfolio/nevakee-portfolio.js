@@ -4,7 +4,7 @@ var NevakeePortfolioProto = Object.create(HTMLElement.prototype);
 
 NevakeePortfolioProto.createdCallback = function () {
 	this.innerHTML 	= "<nevakee-menu></nevakee-menu>"
-					+ "<div class='image-container'></div>"
+					+ "<div class='image-container' id='main-image-container'></div>"
 					+ "<nevakee-zone-defilement></nevakee-zone-defilement>"
 					+ "<nevakee-photo-model></nevakee-photo-model>";
 
@@ -44,13 +44,20 @@ NevakeePortfolioProto.attributeChangedCallback = function () {};
 NevakeePortfolioProto._onMenuClicked = function (event) {
 	// Demande des images a afficher a ton model
 	// return photo objects {label, path_de_l_image}
-	console.log("coucou");
-	console.log("click + nvl categories : " + this._menu.getSelectedCategories());
+	//console.log("coucou");
+	//console.log("click + nvl categories : " + this._menu.getSelectedCategories());
 };
 
 NevakeePortfolioProto._onMinPhotoClicked = function (event) {
-	console.log("coucou : " + event);
-
+	var mainImage = document.getElementById("main-image-container")
+	while (mainImage.hasChildNodes())
+		mainImage.removeChild(mainImage.lastChild);
+    var img = null;
+	img = document.createElement("img");
+	img.id = "main-image";
+	img.src = this._photoModel.getSrcFull(event.id);
+	mainImage.appendChild(img);
+	
 };
 
 document.registerElement('nevakee-portfolio', {prototype: NevakeePortfolioProto});

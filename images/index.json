@@ -1,124 +1,170 @@
 { 
-  "photo": [ 
+  "Portfolio-10" :
       {
           "src_min" : "images/Portfolio-min-10.jpg", 
           "src_full": "images/Portfolio-10.jpg",
-          "category": "Landscape"
+          "category": "Landscape",
+          "EN"      : "Puys de dôme"
       }, 
+  "Portfolio-11" :
       {
           "src_min" : "images/Portfolio-min-11.jpg", 
           "src_full": "images/Portfolio-11.jpg",
-          "category": "Animals"
+          "category": "Animals",
+          "EN"      : "Cat in prison"
       }, 
+  "Portfolio-12" :
       {
           "src_min" : "images/Portfolio-min-12.jpg",
           "src_full": "images/Portfolio-12.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "Bambi Grown Up"
       },
+  "Portfolio-13" :
       {
           "src_min" : "images/Portfolio-min-13.jpg", 
           "src_full": "images/Portfolio-13.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "Crow taking a sunbath"
       }, 
+  "Portfolio-14" :
       {
           "src_min" : "images/Portfolio-min-14.jpg", 
           "src_full": "images/Portfolio-14.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "Mine Mine"
       }, 
+  "Portfolio-15" :
       {
           "src_min" : "images/Portfolio-min-15.jpg", 
           "src_full": "images/Portfolio-15.jpg",
-          "category": "Landscape"
+          "category": "Landscape",
+          "EN"      : "Smoking Iceland"
       }, 
+  "Portfolio-16" :
       {
           "src_min" : "images/Portfolio-min-16.jpg",
           "src_full": "images/Portfolio-16.jpg",
-          "category": "Animals"
+          "category": "Animals",
+          "EN"      : "Stunning ferret"
       },
+  "Portfolio-17" :
       {
           "src_min" : "images/Portfolio-min-17.jpg", 
           "src_full": "images/Portfolio-17.jpg",
-          "category": "Landscape"
+          "category": "Landscape",
+          "EN"      : "Eiffel Liberty"
       }, 
+  "Portfolio-18" :
       {
           "src_min" : "images/Portfolio-min-18.jpg", 
           "src_full": "images/Portfolio-18.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "Cherry Bluetit"
       }, 
+  "Portfolio-19" :
       {
           "src_min" : "images/Portfolio-min-19.jpg",
           "src_full": "images/Portfolio-19.jpg",
-          "category": "Portrait"
+          "category": "Portrait",
+          "EN"      : "Walking on the tree"
       },
+  "Portfolio-20" :
       {
           "src_min" : "images/Portfolio-min-20.jpg", 
           "src_full": "images/Portfolio-20.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "Red eye"
       }, 
+  "Portfolio-21" :
       {
           "src_min" : "images/Portfolio-min-21.jpg", 
           "src_full": "images/Portfolio-21.jpg",
-          "category": "Animals"
+          "category": "Animals",
+          "EN"      : "Polar Bear in Green"
       }, 
+  "Portfolio-22" :
       {
           "src_min" : "images/Portfolio-min-22.jpg",
           "src_full": "images/Portfolio-22.jpg",
-          "category": "Animals"
+          "category": "Animals",
+          "EN"      : "Drunk Meerkat"
       },
+  "Portfolio-23" :
       {
           "src_min" : "images/Portfolio-min-23.jpg", 
           "src_full": "images/Portfolio-23.jpg",
-          "category": "Animals"
+          "category": "Animals",
+          "EN"      : "Spatule"
       }, 
+  "Portfolio-24" :
       {
           "src_min" : "images/Portfolio-min-24.jpg", 
           "src_full": "images/Portfolio-24.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "Bathing Duck"
       }, 
+  "Portfolio-25" :
       {
           "src_min" : "images/Portfolio-min-25.jpg", 
           "src_full": "images/Portfolio-25.jpg",
-          "category": "Portrait"
+          "category": "Portrait",
+          "EN"      : "Perfect Smile"
       }, 
+  "Portfolio-26" :
       {
           "src_min" : "images/Portfolio-min-26.jpg",
           "src_full": "images/Portfolio-26.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "Pollinate"
       },
+  "Portfolio-27" :
       {
           "src_min" : "images/Portfolio-min-27.jpg", 
           "src_full": "images/Portfolio-27.jpg",
-          "category": "Animals"
+          "category": "Animals",
+          "EN"      : "Stunning Cat"
       }, 
+  "Portfolio-28" :
       {
           "src_min" : "images/Portfolio-min-28.jpg", 
           "src_full": "images/Portfolio-28.jpg",
-          "category": "Landscape"
+          "category": "Landscape",
+          "EN"      : "Milky Way"
       }, 
+  "Portfolio-29" :
       {
           "src_min" : "images/Portfolio-min-29.jpg",
           "src_full": "images/Portfolio-29.jpg",
-          "category": "Wildlife"
+          "category": "Wildlife",
+          "EN"      : "White Egret"
       },
+  "Portfolio-30" :
       {
           "src_min" : "images/Portfolio-min-30.jpg", 
           "src_full": "images/Portfolio-30.jpg",
-          "category": "Animals"
+          "category": "Animals",
+          "EN"      : "Get the ball, Good Dog"
       }, 
+  "Portfolio-31" :
       {
           "src_min" : "images/Portfolio-min-31.jpg",
           "src_full": "images/Portfolio-31.jpg",
-          "category": "Portrait"
+          "category": "Portrait",
+          "EN"      : "Water Splash"
       },
+  "Portfolio-32" :
       {
           "src_min" : "images/Portfolio-min-32.jpg", 
           "src_full": "images/Portfolio-32.jpg",
-          "category": "Concert"
+          "category": "Concert",
+          "EN"      : "Daft Orchestro"
       },
+  "Portfolio-33" :
       {
           "src_min" : "images/Portfolio-min-33.jpg", 
           "src_full": "images/Portfolio-33.jpg",
-          "category": "Concert"
+          "category": "Concert",
+          "EN"      : "Violon Rocker"
       }
-   ] 
 } 

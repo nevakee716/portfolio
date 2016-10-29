@@ -4,6 +4,7 @@ nevakee-portfolio {
 	display: block;
 	background: black;
 	height: 100%;
+	overflow: hidden;
 
 	nevakee-menu {
 		height: $nevakee-menu-height;
@@ -17,12 +18,21 @@ nevakee-portfolio {
 		background: black;
 		height: calc(20% - #{$nevakee-menu-height});
 		line-height: calc(20% - #{$nevakee-menu-height});
-		overflow: hidden;
 		.min-image {
-			height: 100%;		
+			height: 100%;
+			border-style : solid;
+    		border-color : red;		
 		}
 	}
 	.image-container {
-		height: 80%;	
+		height: 80%;
+		display: flex;
+		#main-image {
+			max-height: 95%;
+			max-width: 95%;
+			margin: auto;
+		}
 	}
+
 }
+

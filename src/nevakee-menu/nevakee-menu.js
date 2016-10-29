@@ -30,7 +30,6 @@ NevakeeMenuProto._drawMenu = function () {
 	var element = null;
 	var fragment = document.createDocumentFragment();
 	var i = 0;
-	console.log(this.categories)
 	element = document.createElement("div");
 	fragment.appendChild(element);
 	element.textContent = "All";

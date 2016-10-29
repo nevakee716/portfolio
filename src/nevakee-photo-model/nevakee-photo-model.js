@@ -35,10 +35,12 @@ NevakeePhotoModel._loadJSON = function (src,callback) {
 
 NevakeePhotoModel.getCategories = function () {
     var listCategories = [];
-    for (var i = 0; i < this.index.photo.length; i++) {
-        if (this.index.photo[i].hasOwnProperty("category")) {
-            if (!listCategories.includes(this.index.photo[i].category)) {
-                listCategories.push(this.index.photo[i].category);
+    for (var photoId in this.index) {
+        if (this.index.hasOwnProperty(photoId)) {
+            if (this.index[photoId].hasOwnProperty("category")) {
+                if (!listCategories.includes(this.index[photoId].category)) {
+                    listCategories.push(this.index[photoId].category);
+                }
             }    
         }
     }
@@ -46,17 +48,22 @@ NevakeePhotoModel.getCategories = function () {
 }
 
 NevakeePhotoModel.getAllSrcMin = function () {
-    var listSrcMin = [];
-    for (var i = 0; i < this.index.photo.length; i++) {
-        if (this.index.photo[i].hasOwnProperty("src_min")) {
-            if (!listSrcMin.includes(this.index.photo[i].src_min)) {
-                listSrcMin.push(this.index.photo[i].src_min);
+    var SrcsMin = {};
+    for (var photoId in this.index) {
+        if (this.index.hasOwnProperty(photoId)) {
+            if (this.index[photoId].hasOwnProperty("src_min")) {
+                SrcsMin[photoId] = this.index[photoId].src_min;
             }    
         }
     }
-    return listSrcMin;
+    return SrcsMin;
 }
 
+NevakeePhotoModel.getSrcFull = function (photoId) {
+    if (this.index[photoId].hasOwnProperty("src_full")) {
+        return this.index[photoId].src_full;
+    }
+}
 
 
 NevakeePhotoModel._onClick = function (event) {

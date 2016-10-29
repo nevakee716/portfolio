@@ -28,11 +28,9 @@ NevakeeMenuProto.getSelectedCategories = function (menus) {
 
 
 NevakeeMenuProto._drawMenu = function () {
-	console.log(this)
 	var element = null;
 	var fragment = document.createDocumentFragment();
 	var i = 0;
-	console.log(this.categories)
 	element = document.createElement("div");
 	fragment.appendChild(element);
 	element.textContent = "All";
@@ -56,7 +54,13 @@ NevakeeMenuProto._drawMenu = function () {
 };
 
 NevakeeMenuProto._drawText = function (id) {
+	//snapshot des etats des categories
+	var previousStateOfCategories = [];
+	for (var i = 0; i < this.categories.length; i++) { 
+		previousStateOfCategories.push(this.categories[i][1])
+	}
 
+	//modification des categories en fonction du click
 	if(id !== "All") {
 		if(this.numberOfCategoriesOn == this.categories.length) {
 			this.categories.forEach(function (menuItem) {
@@ -79,16 +83,19 @@ NevakeeMenuProto._drawText = function (id) {
 		this.numberOfCategoriesOn = this.categories.length;	
 	}
 
+	
 	if(this.numberOfCategoriesOn == 0 || this.numberOfCategoriesOn == this.categories.length) {
 		this._highlightAll();	
 	}
 	else {
 		for (var i = 0; i < this.categories.length; i++) { 
-		    if(this.categories[i][1] == true) {
-		    	this._highlight(i);
-		    } else {
-		    	this._downlight(i);
-		    }
+			if(previousStateOfCategories[i] !== this.categories[i]) { // on vérifie que l'état à changer
+			    if(this.categories[i][1] == true) {
+			    	this._highlight(i);
+			    } else {
+			    	this._downlight(i);
+			    }
+			}
 		}
 	}
 };
@@ -182,10 +189,12 @@ NevakeePhotoModel._loadJSON = function (src,callback) {
 
 NevakeePhotoModel.getCategories = function () {
     var listCategories = [];
-    for (var i = 0; i < this.index.photo.length; i++) {
-        if (this.index.photo[i].hasOwnProperty("category")) {
-            if (!listCategories.includes(this.index.photo[i].category)) {
-                listCategories.push(this.index.photo[i].category);
+    for (var photoId in this.index) {
+        if (this.index.hasOwnProperty(photoId)) {
+            if (this.index[photoId].hasOwnProperty("category")) {
+                if (!listCategories.includes(this.index[photoId].category)) {
+                    listCategories.push(this.index[photoId].category);
+                }
             }    
         }
     }
@@ -193,17 +202,22 @@ NevakeePhotoModel.getCategories = function () {
 }
 
 NevakeePhotoModel.getAllSrcMin = function () {
-    var listSrcMin = [];
-    for (var i = 0; i < this.index.photo.length; i++) {
-        if (this.index.photo[i].hasOwnProperty("src_min")) {
-            if (!listSrcMin.includes(this.index.photo[i].src_min)) {
-                listSrcMin.push(this.index.photo[i].src_min);
+    var SrcsMin = {};
+    for (var photoId in this.index) {
+        if (this.index.hasOwnProperty(photoId)) {
+            if (this.index[photoId].hasOwnProperty("src_min")) {
+                SrcsMin[photoId] = this.index[photoId].src_min;
             }    
         }
     }
-    return listSrcMin;
+    return SrcsMin;
 }
 
+NevakeePhotoModel.getSrcFull = function (photoId) {
+    if (this.index[photoId].hasOwnProperty("src_full")) {
+        return this.index[photoId].src_full;
+    }
+}
 
 
 NevakeePhotoModel._onClick = function (event) {
@@ -225,7 +239,7 @@ var NevakeePortfolioProto = Object.create(HTMLElement.prototype);
 
 NevakeePortfolioProto.createdCallback = function () {
 	this.innerHTML 	= "<nevakee-menu></nevakee-menu>"
-					+ "<div class='image-container'></div>"
+					+ "<div class='image-container' id='main-image-container'></div>"
 					+ "<nevakee-zone-defilement></nevakee-zone-defilement>"
 					+ "<nevakee-photo-model></nevakee-photo-model>";
 
@@ -265,13 +279,20 @@ NevakeePortfolioProto.attributeChangedCallback = function () {};
 NevakeePortfolioProto._onMenuClicked = function (event) {
 	// Demande des images a afficher a ton model
 	// return photo objects {label, path_de_l_image}
-	console.log("coucou");
-	console.log("click + nvl categories : " + this._menu.getSelectedCategories());
+	//console.log("coucou");
+	//console.log("click + nvl categories : " + this._menu.getSelectedCategories());
 };
 
 NevakeePortfolioProto._onMinPhotoClicked = function (event) {
-	console.log("coucou");
-
+	var mainImage = document.getElementById("main-image-container")
+	while (mainImage.hasChildNodes())
+		mainImage.removeChild(mainImage.lastChild);
+    var img = null;
+	img = document.createElement("img");
+	img.id = "main-image";
+	img.src = this._photoModel.getSrcFull(event.id);
+	mainImage.appendChild(img);
+	
 };
 
 document.registerElement('nevakee-portfolio', {prototype: NevakeePortfolioProto});
@@ -281,7 +302,10 @@ document.registerElement('nevakee-portfolio', {prototype: NevakeePortfolioProto}
 var NevakeeZoneDefilement = Object.create(HTMLElement.prototype);
 
 NevakeeZoneDefilement.createdCallback = function () {
-
+    this.minImageWidth = {};
+    this.minImageWidthArray = [];
+    this.totalMinImageWidth = 0;
+    this.selectMinImageId = null;
 };
 
 NevakeeZoneDefilement.attachededCallback = function () {
@@ -293,26 +317,88 @@ NevakeeZoneDefilement.drawZoneDefilement = function (srcs) {
     var img = null;
     var fragment = document.createDocumentFragment();
     var i = 0;
-    srcs.forEach(function (src) {
-        img = document.createElement("img");
-        img.className = "min-image";
-        img.src = src;
-        img.id = i;
-        i++;
-        fragment.appendChild(img);
-    }, this);
+    this.nbImages = 0;
+    this.nbImagesLoaded = 0;
+    for(var id in srcs) {
+        if (srcs.hasOwnProperty(id)) {
+            this.nbImages ++;
+            img = document.createElement("img");
+            img.className = "min-image";
+            img.src = srcs[id];
+            img.dataset.id = id;
+            i++;
+            fragment.appendChild(img);
+            this.minImageWidth[id] = 0;
+            //calcul de la largeur
+            img.addEventListener("load", this._onMinImageLoad.bind(this), false);
+
+
+        }
+    }
     this.appendChild(fragment);
     this.addEventListener("click", this._onClick.bind(this), false);
 };
 
-
+NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
+    var centerWidth = 0;
+    for (var id in this.minImageWidth) {
+        if (this.minImageWidth.hasOwnProperty(id)) {
+            if(centerId == id) {
+                var size = (this.clientWidth + this.offsetLeft)/2 - centerWidth - this.minImageWidth[id]/2;
+                if(size > 0) {
+                    size = 0;    
+                }
+                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetLeft)) {
+                    size = this.clientWidth + this.offsetLeft - this.totalMinImageWidth;
+                }
+                this.style.marginLeft = size + "px" ;
+            }
+            centerWidth += this.minImageWidth[id];
+        }
+    }
+    
+};
 
 NevakeeZoneDefilement._onClick = function (event) {
+    if(this.selectMinImageId !== null) {
+       this._UnselectMinImageById(this.selectMinImageId,this.firstChild); 
+    }
 	var newEvent = document.createEvent('Event');
-    console.log(event);
 	newEvent.id = event.target.dataset.id;
+    this.selectMinImageId = event.target.dataset.id;
+    this._selectMinImage(event.target); 
+    this._centerOnMinImage(newEvent.id);
 	newEvent.initEvent('on-min-clicked', true, true);
 	this.dispatchEvent(newEvent);
+};
+
+NevakeeZoneDefilement._onMinImageLoad = function (event) {
+    if( event.path[0] && event.path[0].className === "min-image") {
+        this.totalMinImageWidth += event.path[0].width;
+        this.minImageWidth[event.target.dataset.id] = event.path[0].width;
+    }
+
+
+};
+
+NevakeeZoneDefilement._selectMinImage = function (object) {
+    object.style.borderWidth = "0.2rem";
+};
+
+NevakeeZoneDefilement._UnselectMinImageById = function (id,object) {
+    console.log(id)
+    console.log(object)
+    if(object.dataset.id && object.dataset.id == id) {
+        object.style.borderWidth = "0rem";  
+    }
+    else {
+        if (object.nextSibling) {
+            this._UnselectMinImageById(id,object.nextSibling); 
+        }
+    }
+
+
+
 };
 
 NevakeeZoneDefilement.detachedCallback = function () {};
