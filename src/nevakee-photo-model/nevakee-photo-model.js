@@ -59,6 +59,19 @@ NevakeePhotoModel.getAllSrcMin = function () {
     return SrcsMin;
 }
 
+NevakeePhotoModel.getSrcMinByCategories = function (categories) {
+    var SrcsMin = {};
+    for (var photoId in this.index) {
+        if (this.index.hasOwnProperty(photoId)) {
+            if (this.index[photoId].hasOwnProperty("category") && categories.includes(this.index[photoId].category) && this.index[photoId].hasOwnProperty("src_min")) {
+                SrcsMin[photoId] = this.index[photoId].src_min;
+            }    
+        }
+    }
+    return SrcsMin;
+}
+
+
 NevakeePhotoModel.getSrcFull = function (photoId) {
     if (this.index[photoId].hasOwnProperty("src_full")) {
         return this.index[photoId].src_full;

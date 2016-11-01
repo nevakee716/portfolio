@@ -61,19 +61,18 @@ NevakeeMenuProto._drawText = function (id) {
 
 	//modification des categories en fonction du click
 	if(id !== "All") {
-		if(this.numberOfCategoriesOn == this.categories.length) {
-			this.categories.forEach(function (menuItem) {
-				menuItem[1] = false; 
-			}, this);
+		if(this.categories[id][1] === false || this.numberOfCategoriesOn == this.categories.length) {
+			this.categories.forEach(function (category) {
+				category[1] = false;
+			}, this);	
+			this.categories[id][1] = true;
 			this.numberOfCategoriesOn = 1;
-			this.categories[id][1] = true;
-		}
-		else if(this.categories[id][1] === false) {
-			this.numberOfCategoriesOn ++;	
-			this.categories[id][1] = true;
-		} else {
-			this.numberOfCategoriesOn --;	
-			this.categories[id][1] = false;
+		} 
+		else {
+			this.categories.forEach(function (category) {
+				category[1] = true;
+			}, this);
+			this.numberOfCategoriesOn = this.categories.length;	
 		}
 	} else {
 		this.categories.forEach(function (menuItem) {
@@ -81,20 +80,13 @@ NevakeeMenuProto._drawText = function (id) {
 		}, this);
 		this.numberOfCategoriesOn = this.categories.length;	
 	}
-
-	
-	if(this.numberOfCategoriesOn == 0 || this.numberOfCategoriesOn == this.categories.length) {
-		this._highlightAll();	
-	}
-	else {
-		for (var i = 0; i < this.categories.length; i++) { 
-			if(previousStateOfCategories[i] !== this.categories[i]) { // on vérifie que l'état à changer
-			    if(this.categories[i][1] == true) {
-			    	this._highlight(i);
-			    } else {
-			    	this._downlight(i);
-			    }
-			}
+	for (var i = 0; i < this.categories.length; i++) { 
+		if(previousStateOfCategories[i] !== this.categories[i][1]) { // on vérifie que l'état à changer
+		    if(this.categories[i][1] == true) {
+		    	this._highlight(i);
+		    } else {
+		    	this._downlight(i);
+		    }
 		}
 	}
 };
@@ -143,6 +135,7 @@ NevakeeMenuProto._onClick = function (event) {
 	this._drawText(newEvent.id);
 	newEvent.initEvent('on-menu-clicked', true, true);
 	this.dispatchEvent(newEvent);
+	console.log(this.categories)
 };
 
 NevakeeMenuProto.detachedCallback = function () {};

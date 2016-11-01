@@ -62,19 +62,18 @@ NevakeeMenuProto._drawText = function (id) {
 
 	//modification des categories en fonction du click
 	if(id !== "All") {
-		if(this.numberOfCategoriesOn == this.categories.length) {
-			this.categories.forEach(function (menuItem) {
-				menuItem[1] = false; 
-			}, this);
+		if(this.categories[id][1] === false || this.numberOfCategoriesOn == this.categories.length) {
+			this.categories.forEach(function (category) {
+				category[1] = false;
+			}, this);	
+			this.categories[id][1] = true;
 			this.numberOfCategoriesOn = 1;
-			this.categories[id][1] = true;
-		}
-		else if(this.categories[id][1] === false) {
-			this.numberOfCategoriesOn ++;	
-			this.categories[id][1] = true;
-		} else {
-			this.numberOfCategoriesOn --;	
-			this.categories[id][1] = false;
+		} 
+		else {
+			this.categories.forEach(function (category) {
+				category[1] = true;
+			}, this);
+			this.numberOfCategoriesOn = this.categories.length;	
 		}
 	} else {
 		this.categories.forEach(function (menuItem) {
@@ -82,20 +81,13 @@ NevakeeMenuProto._drawText = function (id) {
 		}, this);
 		this.numberOfCategoriesOn = this.categories.length;	
 	}
-
-	
-	if(this.numberOfCategoriesOn == 0 || this.numberOfCategoriesOn == this.categories.length) {
-		this._highlightAll();	
-	}
-	else {
-		for (var i = 0; i < this.categories.length; i++) { 
-			if(previousStateOfCategories[i] !== this.categories[i]) { // on vérifie que l'état à changer
-			    if(this.categories[i][1] == true) {
-			    	this._highlight(i);
-			    } else {
-			    	this._downlight(i);
-			    }
-			}
+	for (var i = 0; i < this.categories.length; i++) { 
+		if(previousStateOfCategories[i] !== this.categories[i][1]) { // on vérifie que l'état à changer
+		    if(this.categories[i][1] == true) {
+		    	this._highlight(i);
+		    } else {
+		    	this._downlight(i);
+		    }
 		}
 	}
 };
@@ -144,6 +136,7 @@ NevakeeMenuProto._onClick = function (event) {
 	this._drawText(newEvent.id);
 	newEvent.initEvent('on-menu-clicked', true, true);
 	this.dispatchEvent(newEvent);
+	console.log(this.categories)
 };
 
 NevakeeMenuProto.detachedCallback = function () {};
@@ -213,6 +206,19 @@ NevakeePhotoModel.getAllSrcMin = function () {
     return SrcsMin;
 }
 
+NevakeePhotoModel.getSrcMinByCategories = function (categories) {
+    var SrcsMin = {};
+    for (var photoId in this.index) {
+        if (this.index.hasOwnProperty(photoId)) {
+            if (this.index[photoId].hasOwnProperty("category") && categories.includes(this.index[photoId].category) && this.index[photoId].hasOwnProperty("src_min")) {
+                SrcsMin[photoId] = this.index[photoId].src_min;
+            }    
+        }
+    }
+    return SrcsMin;
+}
+
+
 NevakeePhotoModel.getSrcFull = function (photoId) {
     if (this.index[photoId].hasOwnProperty("src_full")) {
         return this.index[photoId].src_full;
@@ -264,7 +270,8 @@ NevakeePortfolioProto.createdCallback = function () {
 
 	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
-	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoClicked.bind(this), false);
+	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoSelected.bind(this), false);
+	this._zoneDefilement.addEventListener("on-min-selected", this._onMinPhotoSelected.bind(this), false);
 	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
@@ -277,13 +284,11 @@ NevakeePortfolioProto.attributeChangedCallback = function () {};
 
 
 NevakeePortfolioProto._onMenuClicked = function (event) {
-	// Demande des images a afficher a ton model
-	// return photo objects {label, path_de_l_image}
-	//console.log("coucou");
-	//console.log("click + nvl categories : " + this._menu.getSelectedCategories());
+	console.log(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()))
+	this._zoneDefilement.drawZoneDefilement(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()));
 };
 
-NevakeePortfolioProto._onMinPhotoClicked = function (event) {
+NevakeePortfolioProto._onMinPhotoSelected = function (event) {
 	var mainImage = document.getElementById("main-image-container")
 	while (mainImage.hasChildNodes())
 		mainImage.removeChild(mainImage.lastChild);
@@ -305,7 +310,10 @@ NevakeeZoneDefilement.createdCallback = function () {
     this.minImageWidth = {};
     this.minImageWidthArray = [];
     this.totalMinImageWidth = 0;
+    this.maxMinImageWidth = 0;
     this.selectMinImageId = null;
+    this.nbImages = 0;
+    this.nbImagesLoaded = 0;
 
 };
 
@@ -315,14 +323,16 @@ NevakeeZoneDefilement.attachededCallback = function () {
 
 
 NevakeeZoneDefilement.drawZoneDefilement = function (srcs) {
-        console.log(this.style.marginRight)
-
-        
+    while (this.hasChildNodes())
+        this.removeChild(this.lastChild);
     var img = null;
     var fragment = document.createDocumentFragment();
     var i = 0;
+    this.srcs = srcs;
+    this.maxMinImageWidth = 0;
     this.nbImages = 0;
     this.nbImagesLoaded = 0;
+    this.minImageWidth = {};
     for(var id in srcs) {
         if (srcs.hasOwnProperty(id)) {
             this.nbImages ++;
@@ -335,27 +345,31 @@ NevakeeZoneDefilement.drawZoneDefilement = function (srcs) {
             this.minImageWidth[id] = 0;
             //calcul de la largeur
             img.addEventListener("load", this._onMinImageLoad.bind(this), false);
-
-
         }
     }
     this.appendChild(fragment);
     this.addEventListener("click", this._onClick.bind(this), false);
+
+    //on verifie si l'image selectionne est dans les srcs actuelles
+    if(!this.srcs.hasOwnProperty(this.selectMinImageId)) {
+        this.selectMinImageId = null;
+    }
 };
 
 NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
     var centerWidth = 0;
     for (var id in this.minImageWidth) {
         if (this.minImageWidth.hasOwnProperty(id)) {
-            if(centerId == id) {
-                var size = (this.clientWidth + this.offsetLeft)/2 - centerWidth - this.minImageWidth[id]/2 - 250;
+            if(centerId == id) {                       
+                var size = (this.clientWidth + this.offsetLeft - this.maxMinImageWidth)/2 - centerWidth - this.minImageWidth[id]/2;
                 if(size > 0) {
                     size = 0;    
                 }
-                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetLeft) + 500) {
-                    size = this.clientWidth + this.offsetLeft - this.totalMinImageWidth - 500;
+                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetLeft) + this.maxMinImageWidth) {
+                    size = this.clientWidth + this.offsetLeft - this.totalMinImageWidth - this.maxMinImageWidth*1.1;
                 }
                 this.style.marginLeft = size + "px" ;
+                return;
             }
             centerWidth += this.minImageWidth[id];
         }
@@ -364,25 +378,52 @@ NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
 };
 
 NevakeeZoneDefilement._onClick = function (event) {
-    if(this.selectMinImageId !== null) {
-       this._UnselectMinImageById(this.selectMinImageId,this.firstChild); 
+    if(event.target.className === "min-image") {
+        if(this.selectMinImageId !== null) {
+           this._UnselectMinImageById(this.selectMinImageId,this.firstChild); 
+        }
+    	var newEvent = document.createEvent('Event');
+    	newEvent.id = event.target.dataset.id;
+        this.selectMinImageId = event.target.dataset.id;
+        this._selectMinImage(event.target); 
+        this._centerOnMinImage(newEvent.id);
+    	newEvent.initEvent('on-min-clicked', true, true);
+    	this.dispatchEvent(newEvent);
     }
-	var newEvent = document.createEvent('Event');
-	newEvent.id = event.target.dataset.id;
-    this.selectMinImageId = event.target.dataset.id;
-    this._selectMinImage(event.target); 
-    this._centerOnMinImage(newEvent.id);
-	newEvent.initEvent('on-min-clicked', true, true);
-	this.dispatchEvent(newEvent);
 };
 
 NevakeeZoneDefilement._onMinImageLoad = function (event) {
     if( event.path[0] && event.path[0].className === "min-image") {
         this.totalMinImageWidth += event.path[0].width;
         this.minImageWidth[event.target.dataset.id] = event.path[0].width;
+        if(this.maxMinImageWidth < event.path[0].width) {
+            this.maxMinImageWidth = event.path[0].width;
+        }
+        this.nbImagesLoaded ++;
+
+        // on met les borders pour l'image selectionnée
+        if(this.selectMinImageId == event.target.dataset.id) {
+            this._selectMinImage(event.path[0]);
+        }
+        //si pas d'images selectionné, on prend la 1ere qui se load
+        if(this.selectMinImageId == null) {
+            this.selectMinImageId = event.target.dataset.id
+            this._selectMinImage(event.path[0]);
+            var newEvent = document.createEvent('Event');
+            newEvent.id = this.selectMinImageId;
+            newEvent.initEvent('on-min-selected', true, true);
+            this.dispatchEvent(newEvent);  
+        }
+
+        //si toutes les images sont loadées
+        if(this.nbImagesLoaded == this.nbImages) {
+            // on reset les marges
+            this.style.marginRight = "-" + this.maxMinImageWidth + "px";
+            this.style.marginLeft = 0 + "px";
+            // et on centre l'image selectionné
+            this._centerOnMinImage(this.selectMinImageId);
+        }
     }
-
-
 };
 
 NevakeeZoneDefilement._selectMinImage = function (object) {
@@ -392,6 +433,7 @@ NevakeeZoneDefilement._selectMinImage = function (object) {
 NevakeeZoneDefilement._UnselectMinImageById = function (id,object) {
     if(object.dataset.id && object.dataset.id == id) {
         object.style.borderWidth = "0rem";  
+        return;
     }
     else {
         if (object.nextSibling) {

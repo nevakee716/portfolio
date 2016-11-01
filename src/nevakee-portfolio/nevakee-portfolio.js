@@ -29,7 +29,8 @@ NevakeePortfolioProto.createdCallback = function () {
 
 	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
-	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoClicked.bind(this), false);
+	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoSelected.bind(this), false);
+	this._zoneDefilement.addEventListener("on-min-selected", this._onMinPhotoSelected.bind(this), false);
 	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
@@ -42,13 +43,11 @@ NevakeePortfolioProto.attributeChangedCallback = function () {};
 
 
 NevakeePortfolioProto._onMenuClicked = function (event) {
-	// Demande des images a afficher a ton model
-	// return photo objects {label, path_de_l_image}
-	//console.log("coucou");
-	//console.log("click + nvl categories : " + this._menu.getSelectedCategories());
+	console.log(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()))
+	this._zoneDefilement.drawZoneDefilement(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()));
 };
 
-NevakeePortfolioProto._onMinPhotoClicked = function (event) {
+NevakeePortfolioProto._onMinPhotoSelected = function (event) {
 	var mainImage = document.getElementById("main-image-container")
 	while (mainImage.hasChildNodes())
 		mainImage.removeChild(mainImage.lastChild);
