@@ -1,6 +1,54 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
+var NevakeeMainImage = Object.create(HTMLElement.prototype);
+
+NevakeeMainImage.createdCallback = function () {};
+
+NevakeeMainImage.attachededCallback = function () {};
+
+
+NevakeeMainImage.detachedCallback = function () {};
+
+NevakeeMainImage.attributeChangedCallback = function () {};
+
+NevakeeMainImage.drawImage = function (src) {
+    while (this.hasChildNodes())
+        this.removeChild(this.lastChild);
+    var arrowLeft = document.createElement("img");
+    arrowLeft.id = "arrowLeft";
+    arrowLeft.src = "images/arrow_left.png";
+
+
+    var div = document.createElement("div");
+    div.id = "test_div";
+
+
+    var img = document.createElement("img");
+    img.id = "main-image";
+    img.src = src;
+
+
+    div.appendChild(arrowLeft);
+    div.appendChild(img);
+    this.appendChild(div);
+
+    var arrowRight = document.createElement("img");
+    arrowRight.id = "arrowRight";
+    arrowRight.src = "images/arrow_right.png";
+
+    div.appendChild(arrowLeft);
+    div.appendChild(img);
+    div.appendChild(arrowRight);
+    this.appendChild(div);
+};
+
+
+
+document.registerElement('nevakee-main-image', {prototype: NevakeeMainImage});
+},{}],2:[function(require,module,exports){
+"use strict";
+
 var NevakeeMenuProto = Object.create(HTMLElement.prototype);
 
 NevakeeMenuProto.createdCallback = function () {};
@@ -144,7 +192,7 @@ NevakeeMenuProto.detachedCallback = function () {};
 NevakeeMenuProto.attributeChangedCallback = function () {};
 
 document.registerElement('nevakee-menu', {prototype: NevakeeMenuProto});
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 var NevakeePhotoModel = Object.create(HTMLElement.prototype);
@@ -238,21 +286,21 @@ NevakeePhotoModel.detachedCallback = function () {};
 NevakeePhotoModel.attributeChangedCallback = function () {};
 
 document.registerElement('nevakee-photo-model', {prototype: NevakeePhotoModel});
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 var NevakeePortfolioProto = Object.create(HTMLElement.prototype);
 
 NevakeePortfolioProto.createdCallback = function () {
 	this.innerHTML 	= "<nevakee-menu></nevakee-menu>"
-					+ "<div class='image-container' id='main-image-container'></div>"
+					+ "<nevakee-main-image></nevakee-main-image>"
 					+ "<nevakee-zone-defilement></nevakee-zone-defilement>"
 					+ "<nevakee-photo-model></nevakee-photo-model>";
 
 	this._menu = this.querySelector("nevakee-menu");
-	this._imageContainer = this.querySelector(".image-container");
 	this._zoneDefilement = this.querySelector("nevakee-zone-defilement");
 	this._photoModel = this.querySelector("nevakee-photo-model");
+	this._mainImage = this.querySelector("nevakee-main-image");
 
 
 
@@ -264,9 +312,6 @@ NevakeePortfolioProto.createdCallback = function () {
 		this._zoneDefilement.drawZoneDefilement(this._photoModel.getAllSrcMin());
 
     }
-
-
-
 
 	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
@@ -289,19 +334,11 @@ NevakeePortfolioProto._onMenuClicked = function (event) {
 };
 
 NevakeePortfolioProto._onMinPhotoSelected = function (event) {
-	var mainImage = document.getElementById("main-image-container")
-	while (mainImage.hasChildNodes())
-		mainImage.removeChild(mainImage.lastChild);
-    var img = null;
-	img = document.createElement("img");
-	img.id = "main-image";
-	img.src = this._photoModel.getSrcFull(event.id);
-	mainImage.appendChild(img);
-	
+	this._mainImage.drawImage(this._photoModel.getSrcFull(event.id));
 };
 
 document.registerElement('nevakee-portfolio', {prototype: NevakeePortfolioProto});
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 var NevakeeZoneDefilement = Object.create(HTMLElement.prototype);
@@ -380,7 +417,7 @@ NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
 NevakeeZoneDefilement._onClick = function (event) {
     if(event.target.className === "min-image") {
         if(this.selectMinImageId !== null) {
-           this._UnselectMinImageById(this.selectMinImageId,this.firstChild); 
+           this._findDataSetId(this.selectMinImageId,this.firstChild,this._unSelectMinImage); 
         }
     	var newEvent = document.createEvent('Event');
     	newEvent.id = event.target.dataset.id;
@@ -430,24 +467,49 @@ NevakeeZoneDefilement._selectMinImage = function (object) {
     object.style.borderWidth = "0.2rem";
 };
 
-NevakeeZoneDefilement._UnselectMinImageById = function (id,object) {
-    if(object.dataset.id && object.dataset.id == id) {
+NevakeeZoneDefilement._unSelectMinImage = function (object) {
+    if(object) {
         object.style.borderWidth = "0rem";  
         return;
     }
-    else {
-        if (object.nextSibling) {
-            this._UnselectMinImageById(id,object.nextSibling); 
+};
+
+
+NevakeeZoneDefilement.move = function (offset) {
+    for (var i = 0; i < this.childNodes.length; i++) { 
+        if(this.childNodes[i].dataset.id == this.selectMinImageId) {
+            break;
         }
     }
-
-
+    if(i < this.childNodes.length - offset) {
+        this.selectMinImageId = this.childNodes[i+offset].dataset.id;
+        this._selectMinImage(this.childNodes[i+offset]); 
+        this._unSelectMinImage(this.childNodes[i]);         
+        this._centerOnMinImage(this.selectMinImageId);
+        var newEvent = document.createEvent('Event');
+        newEvent.id = this.selectMinImageId;
+        newEvent.initEvent('on-min-selected', true, true);
+        this.dispatchEvent(newEvent); 
+    }
 
 };
+
+
+NevakeeZoneDefilement._findDataSetId = function (id,object,operation) {
+    if(object.dataset.id && object.dataset.id == id) {
+        return operation(object);
+    }
+    else {
+        if (object.nextSibling) {
+            this._findDataSetId(id,object.nextSibling,operation); 
+        }
+    }
+};
+
 
 NevakeeZoneDefilement.detachedCallback = function () {};
 
 NevakeeZoneDefilement.attributeChangedCallback = function () {};
 
 document.registerElement('nevakee-zone-defilement', {prototype: NevakeeZoneDefilement});
-},{}]},{},[1,4,2,3]);
+},{}]},{},[2,5,3,4,1]);

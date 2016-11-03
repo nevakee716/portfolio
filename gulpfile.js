@@ -24,7 +24,8 @@ paths.jsFiles = [
 	'./src/nevakee-menu/nevakee-menu.js',
 	'./src/nevakee-zone-defilement/nevakee-zone-defilement.js',
 	'./src/nevakee-photo-model/nevakee-photo-model.js',
-	'./src/nevakee-portfolio/nevakee-portfolio.js'
+	'./src/nevakee-portfolio/nevakee-portfolio.js',
+	'./src/nevakee-main-image/nevakee-main-image.js'
 ];
 
 /******************* SASS ******************/

@@ -76,7 +76,7 @@ NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
 NevakeeZoneDefilement._onClick = function (event) {
     if(event.target.className === "min-image") {
         if(this.selectMinImageId !== null) {
-           this._UnselectMinImageById(this.selectMinImageId,this.firstChild); 
+           this._findDataSetId(this.selectMinImageId,this.firstChild,this._unSelectMinImage); 
         }
     	var newEvent = document.createEvent('Event');
     	newEvent.id = event.target.dataset.id;
@@ -126,20 +126,45 @@ NevakeeZoneDefilement._selectMinImage = function (object) {
     object.style.borderWidth = "0.2rem";
 };
 
-NevakeeZoneDefilement._UnselectMinImageById = function (id,object) {
-    if(object.dataset.id && object.dataset.id == id) {
+NevakeeZoneDefilement._unSelectMinImage = function (object) {
+    if(object) {
         object.style.borderWidth = "0rem";  
         return;
     }
-    else {
-        if (object.nextSibling) {
-            this._UnselectMinImageById(id,object.nextSibling); 
+};
+
+
+NevakeeZoneDefilement.move = function (offset) {
+    for (var i = 0; i < this.childNodes.length; i++) { 
+        if(this.childNodes[i].dataset.id == this.selectMinImageId) {
+            break;
         }
     }
-
-
+    if(i < this.childNodes.length - offset) {
+        this.selectMinImageId = this.childNodes[i+offset].dataset.id;
+        this._selectMinImage(this.childNodes[i+offset]); 
+        this._unSelectMinImage(this.childNodes[i]);         
+        this._centerOnMinImage(this.selectMinImageId);
+        var newEvent = document.createEvent('Event');
+        newEvent.id = this.selectMinImageId;
+        newEvent.initEvent('on-min-selected', true, true);
+        this.dispatchEvent(newEvent); 
+    }
 
 };
+
+
+NevakeeZoneDefilement._findDataSetId = function (id,object,operation) {
+    if(object.dataset.id && object.dataset.id == id) {
+        return operation(object);
+    }
+    else {
+        if (object.nextSibling) {
+            this._findDataSetId(id,object.nextSibling,operation); 
+        }
+    }
+};
+
 
 NevakeeZoneDefilement.detachedCallback = function () {};
 

@@ -4,14 +4,14 @@ var NevakeePortfolioProto = Object.create(HTMLElement.prototype);
 
 NevakeePortfolioProto.createdCallback = function () {
 	this.innerHTML 	= "<nevakee-menu></nevakee-menu>"
-					+ "<div class='image-container' id='main-image-container'></div>"
+					+ "<nevakee-main-image></nevakee-main-image>"
 					+ "<nevakee-zone-defilement></nevakee-zone-defilement>"
 					+ "<nevakee-photo-model></nevakee-photo-model>";
 
 	this._menu = this.querySelector("nevakee-menu");
-	this._imageContainer = this.querySelector(".image-container");
 	this._zoneDefilement = this.querySelector("nevakee-zone-defilement");
 	this._photoModel = this.querySelector("nevakee-photo-model");
+	this._mainImage = this.querySelector("nevakee-main-image");
 
 
 
@@ -23,9 +23,6 @@ NevakeePortfolioProto.createdCallback = function () {
 		this._zoneDefilement.drawZoneDefilement(this._photoModel.getAllSrcMin());
 
     }
-
-
-
 
 	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
@@ -48,15 +45,7 @@ NevakeePortfolioProto._onMenuClicked = function (event) {
 };
 
 NevakeePortfolioProto._onMinPhotoSelected = function (event) {
-	var mainImage = document.getElementById("main-image-container")
-	while (mainImage.hasChildNodes())
-		mainImage.removeChild(mainImage.lastChild);
-    var img = null;
-	img = document.createElement("img");
-	img.id = "main-image";
-	img.src = this._photoModel.getSrcFull(event.id);
-	mainImage.appendChild(img);
-	
+	this._mainImage.drawImage(this._photoModel.getSrcFull(event.id));
 };
 
 document.registerElement('nevakee-portfolio', {prototype: NevakeePortfolioProto});
