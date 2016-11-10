@@ -3,9 +3,13 @@
 
 var NevakeeMainImage = Object.create(HTMLElement.prototype);
 
-NevakeeMainImage.createdCallback = function () {};
+NevakeeMainImage.createdCallback = function () {
+    this.child = 0 ;
+};
 
-NevakeeMainImage.attachededCallback = function () {};
+NevakeeMainImage.attachededCallback = function () {
+
+};
 
 
 NevakeeMainImage.detachedCallback = function () {};
@@ -13,33 +17,20 @@ NevakeeMainImage.detachedCallback = function () {};
 NevakeeMainImage.attributeChangedCallback = function () {};
 
 NevakeeMainImage.drawImage = function (src) {
-    while (this.hasChildNodes())
-        this.removeChild(this.lastChild);
-    var arrowLeft = document.createElement("img");
-    arrowLeft.id = "arrowLeft";
-    arrowLeft.src = "images/arrow_left.png";
-
-
+    if (this.hasChildNodes() && this.child > 1 ) {
+        this.removeChild(this.firstChild)
+        console.log(this.firstChild)
+        this.firstChild.style.opacity = "0";
+        this.firstChild.style.zIndex = "2";
+    }
+    this.child ++;
     var div = document.createElement("div");
-    div.id = "test_div";
-
-
+    div.style.opacity="1";
+    div.style.zIndex="1";
     var img = document.createElement("img");
-    img.id = "main-image";
+    img.className = "main-image";
     img.src = src;
-
-
-    div.appendChild(arrowLeft);
     div.appendChild(img);
-    this.appendChild(div);
-
-    var arrowRight = document.createElement("img");
-    arrowRight.id = "arrowRight";
-    arrowRight.src = "images/arrow_right.png";
-
-    div.appendChild(arrowLeft);
-    div.appendChild(img);
-    div.appendChild(arrowRight);
     this.appendChild(div);
 };
 

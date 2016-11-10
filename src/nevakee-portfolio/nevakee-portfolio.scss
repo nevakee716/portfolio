@@ -29,32 +29,6 @@ nevakee-portfolio {
 		margin: auto;
 		display: flex;
 
-		#test_div {
-			margin: auto;
-			float: left;
-			position: relative;
-			#arrowLeft {
-				position: absolute;
-				height: 10%;
-				top:45%;
-			}
-			#main-image {
-				margin: auto;
-				max-height:95%;
-				max-width:95%;
-			}
-			#arrowRight {
-				position: absolute;
-				height: 10%;
-				margin: auto;
-				top:45%;
-				left:85%;
-			}
-		}
-
-
-
-
 	}
 
 }

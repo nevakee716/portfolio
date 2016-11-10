@@ -1,4 +1,16 @@
 nevakee-main-image {
-	display: block;
-	background: black;
+	display: flex;
+	div {
+		position:absolute;
+		display:flex;
+		transition: opacity 1s ease-in-out;
+		img {
+		    max-width: 95%;
+		    max-height: 95%;
+		    margin:auto;
+		    
+		}	
+	}
+
 }
+
