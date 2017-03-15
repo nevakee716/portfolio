@@ -1,7 +1,8 @@
 nevakee-main-image {
+	position:relative;
 	display: flex;
 	div {
-		position:absolute;
+		position:relative;
 		display:flex;
 		transition: opacity 1s ease-in-out;
 		img {

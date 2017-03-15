@@ -57,14 +57,14 @@ NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
     for (var id in this.minImageWidth) {
         if (this.minImageWidth.hasOwnProperty(id)) {
             if(centerId == id) {                       
-                var size = (this.clientWidth + this.offsetLeft - this.maxMinImageWidth)/2 - centerWidth - this.minImageWidth[id]/2;
+                var size = (this.clientWidth + this.offsetTop - this.maxMinImageWidth)/2 - centerWidth - this.minImageWidth[id]/2;
                 if(size > 0) {
                     size = 0;    
                 }
-                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetLeft) + this.maxMinImageWidth) {
-                    size = this.clientWidth + this.offsetLeft - this.totalMinImageWidth - this.maxMinImageWidth*1.1;
+                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetTop) + this.maxMinImageWidth) {
+                    size = this.clientWidth + this.offsetTop - this.totalMinImageWidth - this.maxMinImageWidth*1.1;
                 }
-                this.style.marginLeft = size + "px" ;
+                this.style.marginTop = size + "px" ;
                 return;
             }
             centerWidth += this.minImageWidth[id];
@@ -103,7 +103,7 @@ NevakeeZoneDefilement._onMinImageLoad = function (event) {
         }
         //si pas d'images selectionné, on prend la 1ere qui se load
         if(this.selectMinImageId == null) {
-            this.selectMinImageId = event.target.dataset.id
+            this.selectMinImageId = event.target.dataset.id;
             this._selectMinImage(event.path[0]);
             var newEvent = document.createEvent('Event');
             newEvent.id = this.selectMinImageId;
@@ -114,8 +114,8 @@ NevakeeZoneDefilement._onMinImageLoad = function (event) {
         //si toutes les images sont loadées
         if(this.nbImagesLoaded == this.nbImages) {
             // on reset les marges
-            this.style.marginRight = "-" + this.maxMinImageWidth + "px";
-            this.style.marginLeft = 0 + "px";
+            this.style.marginBottom = "-" + this.maxMinImageWidth + "px";
+            this.style.marginTop = 0 + "px";
             // et on centre l'image selectionné
             this._centerOnMinImage(this.selectMinImageId);
         }

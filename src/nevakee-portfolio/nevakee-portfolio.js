@@ -23,12 +23,9 @@ NevakeePortfolioProto.createdCallback = function () {
 		this._zoneDefilement.drawZoneDefilement(this._photoModel.getAllSrcMin());
 
     }
-
-	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
 	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoSelected.bind(this), false);
 	this._zoneDefilement.addEventListener("on-min-selected", this._onMinPhotoSelected.bind(this), false);
-	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
 NevakeePortfolioProto.attachededCallback = function () {};
@@ -40,7 +37,6 @@ NevakeePortfolioProto.attributeChangedCallback = function () {};
 
 
 NevakeePortfolioProto._onMenuClicked = function (event) {
-	console.log(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()))
 	this._zoneDefilement.drawZoneDefilement(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()));
 };
 

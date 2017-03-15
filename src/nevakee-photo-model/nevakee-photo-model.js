@@ -29,9 +29,9 @@ NevakeePhotoModel._loadJSON = function (src,callback) {
             // .open will NOT return a value but simply returns undefined in async mode so use a callback
             callback(xobj.responseText);
         }
-    }
+    };
     xobj.send(null);
-}
+};
 
 NevakeePhotoModel.getCategories = function () {
     var listCategories = [];

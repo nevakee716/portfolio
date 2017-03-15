@@ -1,8 +1,10 @@
 nevakee-menu {
-	display: flex;
+	display: block;
 
 	> .menu-item {
 		padding-left: 0.5rem;
 		padding-right: 0.5rem;
+		padding-top: 1rem;
+		padding-bottom: 1rem;
 	}
 }

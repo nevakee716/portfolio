@@ -17,16 +17,10 @@ NevakeeMainImage.detachedCallback = function () {};
 NevakeeMainImage.attributeChangedCallback = function () {};
 
 NevakeeMainImage.drawImage = function (src) {
-    if (this.hasChildNodes() && this.child > 1 ) {
-        this.removeChild(this.firstChild)
-        console.log(this.firstChild)
-        this.firstChild.style.opacity = "0";
-        this.firstChild.style.zIndex = "2";
+    if (this.hasChildNodes()) {
+        this.removeChild(this.firstChild);
     }
-    this.child ++;
     var div = document.createElement("div");
-    div.style.opacity="1";
-    div.style.zIndex="1";
     var img = document.createElement("img");
     img.className = "main-image";
     img.src = src;
@@ -215,9 +209,9 @@ NevakeePhotoModel._loadJSON = function (src,callback) {
             // .open will NOT return a value but simply returns undefined in async mode so use a callback
             callback(xobj.responseText);
         }
-    }
+    };
     xobj.send(null);
-}
+};
 
 NevakeePhotoModel.getCategories = function () {
     var listCategories = [];
@@ -303,12 +297,9 @@ NevakeePortfolioProto.createdCallback = function () {
 		this._zoneDefilement.drawZoneDefilement(this._photoModel.getAllSrcMin());
 
     }
-
-	//this._menu.setMenu(this._photoModel.getCategories());
 	this._menu.addEventListener("on-menu-clicked", this._onMenuClicked.bind(this), false);
 	this._zoneDefilement.addEventListener("on-min-clicked", this._onMinPhotoSelected.bind(this), false);
 	this._zoneDefilement.addEventListener("on-min-selected", this._onMinPhotoSelected.bind(this), false);
-	//this._zoneDefilement.addEventListener("on-photo-clicked", this._onPhotoClicked.bind(this), false);
 };
 
 NevakeePortfolioProto.attachededCallback = function () {};
@@ -320,7 +311,6 @@ NevakeePortfolioProto.attributeChangedCallback = function () {};
 
 
 NevakeePortfolioProto._onMenuClicked = function (event) {
-	console.log(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()))
 	this._zoneDefilement.drawZoneDefilement(this._photoModel.getSrcMinByCategories(this._menu.getSelectedCategories()));
 };
 
@@ -389,14 +379,14 @@ NevakeeZoneDefilement._centerOnMinImage = function (centerId) {
     for (var id in this.minImageWidth) {
         if (this.minImageWidth.hasOwnProperty(id)) {
             if(centerId == id) {                       
-                var size = (this.clientWidth + this.offsetLeft - this.maxMinImageWidth)/2 - centerWidth - this.minImageWidth[id]/2;
+                var size = (this.clientWidth + this.offsetTop - this.maxMinImageWidth)/2 - centerWidth - this.minImageWidth[id]/2;
                 if(size > 0) {
                     size = 0;    
                 }
-                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetLeft) + this.maxMinImageWidth) {
-                    size = this.clientWidth + this.offsetLeft - this.totalMinImageWidth - this.maxMinImageWidth*1.1;
+                if(-size > this.totalMinImageWidth - (this.clientWidth + this.offsetTop) + this.maxMinImageWidth) {
+                    size = this.clientWidth + this.offsetTop - this.totalMinImageWidth - this.maxMinImageWidth*1.1;
                 }
-                this.style.marginLeft = size + "px" ;
+                this.style.marginTop = size + "px" ;
                 return;
             }
             centerWidth += this.minImageWidth[id];
@@ -435,7 +425,7 @@ NevakeeZoneDefilement._onMinImageLoad = function (event) {
         }
         //si pas d'images selectionné, on prend la 1ere qui se load
         if(this.selectMinImageId == null) {
-            this.selectMinImageId = event.target.dataset.id
+            this.selectMinImageId = event.target.dataset.id;
             this._selectMinImage(event.path[0]);
             var newEvent = document.createEvent('Event');
             newEvent.id = this.selectMinImageId;
@@ -446,8 +436,8 @@ NevakeeZoneDefilement._onMinImageLoad = function (event) {
         //si toutes les images sont loadées
         if(this.nbImagesLoaded == this.nbImages) {
             // on reset les marges
-            this.style.marginRight = "-" + this.maxMinImageWidth + "px";
-            this.style.marginLeft = 0 + "px";
+            this.style.marginBottom = "-" + this.maxMinImageWidth + "px";
+            this.style.marginTop = 0 + "px";
             // et on centre l'image selectionné
             this._centerOnMinImage(this.selectMinImageId);
         }

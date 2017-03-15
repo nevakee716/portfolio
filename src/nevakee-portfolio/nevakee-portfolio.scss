@@ -1,23 +1,24 @@
-$nevakee-menu-height: 3rem !default;
+$nevakee-side-width: 3rem !default;
 
 nevakee-portfolio {
-	display: block;
+	display: flex;
 	background: black;
 	height: 100%;
+	width: 100%;
 	overflow: hidden;
 
 	nevakee-menu {
-		height: $nevakee-menu-height;
+		width: $nevakee-side-width;
 		background: black;
 		color: white;
-		font-size: 3rem;
+		font-size: 2rem;
 		text-align: center;
+		width : 15%;
 	}
 
 	nevakee-zone-defilement {
 		background: black;
-		height: calc(20% - #{$nevakee-menu-height});
-		line-height: calc(20% - #{$nevakee-menu-height});
+		width: $nevakee-side-width;
 		.min-image {
 			height: 100%;
 			border-style : solid;
@@ -25,9 +26,8 @@ nevakee-portfolio {
 		}
 	}
 	nevakee-main-image {
-		height: 80%;
-		margin: auto;
-		display: flex;
+		width: 70%;
+		height: 100%;
 
 	}
 
