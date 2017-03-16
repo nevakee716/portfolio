@@ -45,38 +45,44 @@ NevakeePhotoModel.getCategories = function () {
         }
     }
     return listCategories;
-}
+};
 
 NevakeePhotoModel.getAllSrcMin = function () {
     var SrcsMin = {};
     for (var photoId in this.index) {
         if (this.index.hasOwnProperty(photoId)) {
-            if (this.index[photoId].hasOwnProperty("src_min")) {
-                SrcsMin[photoId] = this.index[photoId].src_min;
+            if (this.index[photoId].hasOwnProperty("src_min") && this.index[photoId].hasOwnProperty("width_min") && this.index[photoId].hasOwnProperty("height_min")) {
+                SrcsMin[photoId] = {};
+                SrcsMin[photoId].src = this.index[photoId].src_min;
+                SrcsMin[photoId].width = this.index[photoId].width_min;
+                SrcsMin[photoId].height = this.index[photoId].height_min;
             }    
         }
     }
     return SrcsMin;
-}
+};
 
 NevakeePhotoModel.getSrcMinByCategories = function (categories) {
     var SrcsMin = {};
     for (var photoId in this.index) {
         if (this.index.hasOwnProperty(photoId)) {
             if (this.index[photoId].hasOwnProperty("category") && categories.includes(this.index[photoId].category) && this.index[photoId].hasOwnProperty("src_min")) {
-                SrcsMin[photoId] = this.index[photoId].src_min;
+                SrcsMin[photoId] = {};
+                SrcsMin[photoId].src = this.index[photoId].src_min;
+                SrcsMin[photoId].width = this.index[photoId].width_min;
+                SrcsMin[photoId].height = this.index[photoId].height_min;
             }    
         }
     }
     return SrcsMin;
-}
+};
 
 
 NevakeePhotoModel.getSrcFull = function (photoId) {
     if (this.index[photoId].hasOwnProperty("src_full")) {
         return this.index[photoId].src_full;
     }
-}
+};
 
 
 NevakeePhotoModel._onClick = function (event) {

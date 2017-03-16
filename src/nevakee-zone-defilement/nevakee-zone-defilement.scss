@@ -1,4 +1,10 @@
 nevakee-zone-defilement {
 	display: block;
 	background: red;
+	overflow:hidden;
+	nevakee-lazy-image {
+	div{
+		padding:10%;
+	}
+	}
 }

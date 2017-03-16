@@ -41,6 +41,7 @@ NevakeePortfolioProto._onMenuClicked = function (event) {
 };
 
 NevakeePortfolioProto._onMinPhotoSelected = function (event) {
+	
 	this._mainImage.drawImage(this._photoModel.getSrcFull(event.id));
 };
 

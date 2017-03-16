@@ -1,11 +1,10 @@
-$nevakee-side-width: 3rem !default;
+$nevakee-side-width: 15% !default;
 
 nevakee-portfolio {
 	display: flex;
 	background: black;
 	height: 100%;
 	width: 100%;
-	overflow: hidden;
 
 	nevakee-menu {
 		width: $nevakee-side-width;
@@ -19,11 +18,7 @@ nevakee-portfolio {
 	nevakee-zone-defilement {
 		background: black;
 		width: $nevakee-side-width;
-		.min-image {
-			height: 100%;
-			border-style : solid;
-    		border-color : red;		
-		}
+		
 	}
 	nevakee-main-image {
 		width: 70%;

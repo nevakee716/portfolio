@@ -56,7 +56,7 @@ NevakeeMenuProto._drawText = function (id) {
 	//snapshot des etats des categories
 	var previousStateOfCategories = [];
 	for (var i = 0; i < this.categories.length; i++) { 
-		previousStateOfCategories.push(this.categories[i][1])
+		previousStateOfCategories.push(this.categories[i][1]);
 	}
 
 	//modification des categories en fonction du click
@@ -135,7 +135,7 @@ NevakeeMenuProto._onClick = function (event) {
 	this._drawText(newEvent.id);
 	newEvent.initEvent('on-menu-clicked', true, true);
 	this.dispatchEvent(newEvent);
-	console.log(this.categories)
+
 };
 
 NevakeeMenuProto.detachedCallback = function () {};
